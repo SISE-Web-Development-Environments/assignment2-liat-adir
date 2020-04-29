@@ -6,11 +6,19 @@ var pac_color;
 var start_time;
 var time_elapsed;
 var interval;
+var lastKeyPressed = "right";
+var maxMonsters;
 
 $(document).ready(function() {
 	context = canvas.getContext("2d");
 	Start();
 });
+
+// 4 - Walls
+// 1 - Food
+// 2 - Pacman start point
+// 0 - Pass
+// 5 - monster
 
 function Start() {
 	board = new Array();
@@ -19,33 +27,69 @@ function Start() {
 	var cnt = 100;
 	var food_remain = 50;
 	var pacman_remain = 1;
+	maxMonsters = 4;
 	start_time = new Date();
-	for (var i = 0; i < 10; i++) {
+	for (var i = 0; i < 10; i++)
 		board[i] = new Array();
+
+	board[0][0] = 5;
+
+
+
+		if (maxMonsters > 1)
+			board[9][9] = 5;
+		
+		if (maxMonsters > 2)
+			board[0][9] = 5;
+
+		if (maxMonsters > 3)
+			board[9][0] = 5;		
+
+
+	for (var i = 0; i < 10; i++) {
 		//put obstacles in (i=3,j=3) and (i=3,j=4) and (i=3,j=5), (i=6,j=1) and (i=6,j=2)
 		for (var j = 0; j < 10; j++) {
 			if (
+				(i == 0 && j == 3) ||
+				(i == 1 && j == 3) ||
+				(i == 2 && j == 3) ||
+				(i == 0 && j == 8) ||
+				(i == 1 && j == 8) ||
+				(i == 2 && j == 8) ||
+				(i == 4 && j == 5) ||
+
 				(i == 3 && j == 3) ||
 				(i == 3 && j == 4) ||
 				(i == 3 && j == 5) ||
 				(i == 6 && j == 1) ||
+				(i == 7 && j == 4) ||
+				(i == 8 && j == 4) ||
+				(i == 6 && j == 4) ||
+
+				(i == 5 && j == 7) ||
+				(i == 5 && j == 8) ||
+				(i == 5 && j == 9) ||
+
 				(i == 6 && j == 2)
 			) {
 				board[i][j] = 4;
 			} else {
-				var randomNum = Math.random();
-				if (randomNum <= (1.0 * food_remain) / cnt) {
-					food_remain--;
-					board[i][j] = 1;
-				} else if (randomNum < (1.0 * (pacman_remain + food_remain)) / cnt) {
-					shape.i = i;
-					shape.j = j;
-					pacman_remain--;
-					board[i][j] = 2;
-				} else {
-					board[i][j] = 0;
+				if (board[i][j] != 5) {
+					var randomNum = Math.random();
+					if (randomNum <= (1.0 * food_remain) / cnt) {
+						food_remain--;
+						board[i][j] = 1;
+					} else if (randomNum < (1.0 * (pacman_remain + food_remain)) / cnt) {
+						shape.i = i;
+						shape.j = j;
+						pacman_remain--;
+						board[i][j] = 2;
+					} else {
+						board[i][j] = 0;
+					}
+					cnt--;
 				}
-				cnt--;
+
 			}
 		}
 	}
@@ -54,6 +98,9 @@ function Start() {
 		board[emptyCell[0]][emptyCell[1]] = 1;
 		food_remain--;
 	}
+
+
+
 	keysDown = {};
 	addEventListener(
 		"keydown",
@@ -69,7 +116,7 @@ function Start() {
 		},
 		false
 	);
-	interval = setInterval(UpdatePosition, 250);
+	interval = setInterval(UpdatePosition, 100);
 }
 
 function findRandomEmptyCell(board) {
@@ -82,19 +129,31 @@ function findRandomEmptyCell(board) {
 	return [i, j];
 }
 
+function isKeyPressed() {
+
+	if (keysDown[38] || keysDown[40] || keysDown[37] || keysDown[39]) 
+		return true;
+
+	return false;
+
+}
+
 function GetKeyPressed() {
+	
 	if (keysDown[38]) {
-		return 1;
+		lastKeyPressed = "up";
 	}
 	if (keysDown[40]) {
-		return 2;
+		lastKeyPressed = "down";
 	}
 	if (keysDown[37]) {
-		return 3;
+		lastKeyPressed = "left";
 	}
 	if (keysDown[39]) {
-		return 4;
+		lastKeyPressed = "right";
 	}
+
+	return lastKeyPressed;
 }
 
 function Draw() {
@@ -107,24 +166,48 @@ function Draw() {
 			center.x = i * 60 + 30;
 			center.y = j * 60 + 30;
 			if (board[i][j] == 2) {
+				var key = GetKeyPressed();
 				context.beginPath();
-				context.arc(center.x, center.y, 30, 0.15 * Math.PI, 1.85 * Math.PI); // half circle
+				if (key == "left")
+					context.arc(center.x, center.y, 30, 1.15 * Math.PI, 0.85 * Math.PI); // half circle left
+				else if (key =="right")
+					context.arc(center.x, center.y, 30, 0.15 * Math.PI, 1.85 * Math.PI); // half circle right
+				else if (key =="up")
+					context.arc(center.x, center.y, 30, 0 * Math.PI, 2 * Math.PI); // half circle right
+				else if (key =="down")
+					context.arc(center.x, center.y, 30, 0 * Math.PI, 2 * Math.PI); // half circle right
+
+
 				context.lineTo(center.x, center.y);
 				context.fillStyle = pac_color; //color
 				context.fill();
 				context.beginPath();
-				context.arc(center.x + 5, center.y - 15, 5, 0, 2 * Math.PI); // circle
+				if (key != "up" && key != "down")
+					context.arc(center.x + 5, center.y - 15, 4, 0, 2 * Math.PI); // circle
+				if (key == "down")
+				{
+					context.arc(center.x + 7, center.y - 15, 4, 0, 2 * Math.PI); // circle
+					context.arc(center.x - 7, center.y - 15, 4, 0, 2 * Math.PI); // circle
+				}
+
 				context.fillStyle = "black"; //color
 				context.fill();
 			} else if (board[i][j] == 1) {
 				context.beginPath();
-				context.arc(center.x, center.y, 15, 0, 2 * Math.PI); // circle
-				context.fillStyle = "black"; //color
+				context.arc(center.x, center.y, 10, 0, 2 * Math.PI); // circle
+				context.fillStyle = "green"; //color
 				context.fill();
+
 			} else if (board[i][j] == 4) {
 				context.beginPath();
 				context.rect(center.x - 30, center.y - 30, 60, 60);
 				context.fillStyle = "grey"; //color
+				context.fill();
+			}
+			else if (board[i][j] == 5) {
+				context.beginPath();
+				context.rect(center.x - 30, center.y - 30, 60, 60);
+				context.fillStyle = "red"; //color
 				context.fill();
 			}
 		}
@@ -133,27 +216,31 @@ function Draw() {
 
 function UpdatePosition() {
 	board[shape.i][shape.j] = 0;
-	var x = GetKeyPressed();
-	if (x == 1) {
-		if (shape.j > 0 && board[shape.i][shape.j - 1] != 4) {
-			shape.j--;
+	if (isKeyPressed())
+	{
+		var x = GetKeyPressed();
+		if (x == "up") {
+			if (shape.j > 0 && board[shape.i][shape.j - 1] != 4) {
+				shape.j--;
+			}
+		}
+		if (x == "down") {
+			if (shape.j < 9 && board[shape.i][shape.j + 1] != 4) {
+				shape.j++;
+			}
+		}
+		if (x == "left") {
+			if (shape.i > 0 && board[shape.i - 1][shape.j] != 4) {
+				shape.i--;
+			}
+		}
+		if (x == "right") {
+			if (shape.i < 9 && board[shape.i + 1][shape.j] != 4) {
+				shape.i++;
+			}
 		}
 	}
-	if (x == 2) {
-		if (shape.j < 9 && board[shape.i][shape.j + 1] != 4) {
-			shape.j++;
-		}
-	}
-	if (x == 3) {
-		if (shape.i > 0 && board[shape.i - 1][shape.j] != 4) {
-			shape.i--;
-		}
-	}
-	if (x == 4) {
-		if (shape.i < 9 && board[shape.i + 1][shape.j] != 4) {
-			shape.i++;
-		}
-	}
+	
 	if (board[shape.i][shape.j] == 1) {
 		score++;
 	}
