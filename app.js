@@ -10,6 +10,7 @@ var pac_color;
 var start_time;
 var time_elapsed;
 var interval;
+var interval2;
 var lastKeyPressed;
 var maxMonsters;
 var health;
@@ -144,6 +145,7 @@ function Start() {
 		false
 	);
 	interval = setInterval(UpdatePosition, 100);
+	interval2 = setInterval(moveMobs, 250);
 }
 
 function findRandomEmptyCell(board) {
@@ -384,8 +386,6 @@ function UpdatePosition() {
 	var currentTime = new Date();
 	time_elapsed = (currentTime - start_time) / 1000;
 
-	moveMobs();
-
 	if (timeBonusAvailable && ((gameTime-time_elapsed) <= 10)) {
 		var timeBonusCell = findRandomEmptyCell(board);
 		board[timeBonusCell[0]][timeBonusCell[1]] = 10;
@@ -394,6 +394,7 @@ function UpdatePosition() {
 
 	if (health == 0) {
 		window.clearInterval(interval);
+		window.clearInterval(interval2);
 		window.alert("Loser!");
 	}
 	else if (gameTime <= time_elapsed)
@@ -401,11 +402,13 @@ function UpdatePosition() {
 		if (score < 100)
 		{
 			window.clearInterval(interval);
+			window.clearInterval(interval2);
 			window.alert("You are better than " + score + " points!");
 		}
 		else
 		{
 			window.clearInterval(interval);
+			window.clearInterval(interval2);
 			window.alert("Winner!");
 		}
 
