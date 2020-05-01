@@ -26,7 +26,7 @@ var largeBallColor;
 var base_size = 40;
 var rows = 25;
 var columns = 12;
-var remainingBalls;
+var remainingBalls = 0;
 
 
 $(document).ready(function() {
@@ -119,9 +119,8 @@ function Start() {
 	lastKeyPressed = "right";
 	pac_color = "yellow";
 	var cnt = 100;
-	var food_remain = 60;
+	var food_remain = 50;
 	var pacman_remain = 1;
-	remainingBalls = food_remain + 1;
 	health = 5;
 	maxMonsters = 4;
 	start_time = new Date();
@@ -250,18 +249,21 @@ function Start() {
 	{
 		cell = findRandomEmptyCell(board);
 		board[cell[0]][cell[1]] = 11;
+		remainingBalls++;
 	}
 	
 	for (var count = 0; count < largeAmount; count++)
 	{
 		cell = findRandomEmptyCell(board);
 		board[cell[0]][cell[1]] = 111;
+		remainingBalls++;
 	}
 
 	while (actualFood > 0) {
 		var emptyCell = findRandomEmptyCell(board);
 		board[emptyCell[0]][emptyCell[1]] = 1;
 		actualFood--;
+		remainingBalls++;
 	}
 
 
