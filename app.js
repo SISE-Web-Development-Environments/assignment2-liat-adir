@@ -119,7 +119,7 @@ function Start() {
 	lastKeyPressed = "right";
 	pac_color = "yellow";
 	var cnt = 100;
-	var food_remain = 5;
+	var food_remain = 60;
 	var pacman_remain = 1;
 	remainingBalls = food_remain + 1;
 	health = 5;
