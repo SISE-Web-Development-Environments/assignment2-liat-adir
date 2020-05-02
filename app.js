@@ -27,12 +27,120 @@ var base_size = 40;
 var rows = 25;
 var columns = 12;
 var remainingBalls = 0;
+var audio = new Audio();
 
 
 $(document).ready(function() {
+
 	context = canvas.getContext("2d");
-	Start();
+
+	window.addEventListener("keydown", function(e) {
+		if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+			e.preventDefault();
+		}
+	}, false);
+
 });
+
+function startGame()
+{
+
+	var time = document.getElementById("timeChosen").value;
+	var isNumber = time.match(/^[0-9]+$/) != null;
+
+	if (!isNumber)
+	{
+		alert("Time field is invalid");
+	}
+	else
+	{
+		setGameTime(time);
+		playAudio();
+		Start();
+
+	}
+	
+
+}
+
+function setGameTime(time)
+{
+	if (time >= 60)
+		gameTime = time;
+	else
+		gameTime = 60;
+}
+
+function playAudio()
+{
+	var audioChosen = document.getElementById("song").value;
+
+	if (audioChosen == "golddigger")
+		audio.src = "./resources/golddigger.mp3";
+	else
+		audio.src = "./resources/babyshark.mp3";
+
+	audio.play();
+}
+
+
+function changeKey(key) {
+	var label;
+	var div;
+
+	if (key == 'up')
+	{
+		label = document.getElementById("keyUpLabel");
+		div = document.getElementById("keyUpDiv")
+	}
+
+	else if (key == 'down')
+	{
+		label = document.getElementById("keyDownLabel");
+		div = document.getElementById("keyDownDiv")
+
+	}
+
+	else if (key == 'left')
+	{
+		label = document.getElementById("keyLeftLabel");
+		div = document.getElementById("keyLeftDiv")
+
+	}
+
+	else
+	{
+		label = document.getElementById("keyRightLabel");
+		div = document.getElementById("keyRightDiv")
+
+	}
+
+	alert("Press a key");
+	div.style.backgroundColor="#66FF66";
+	addEventListener('keydown', function(event) {
+		const key = event.keyCode; // "a", "1", "Shift", etc.
+
+	while (key == "undefined");
+
+	this.removeEventListener('keydown',arguments.callee,false);	
+	if (keyCode == 32)
+		alert("Space is not a valid key");
+	else
+		label.innerHTML = event.key;
+
+	div.style.backgroundColor="white";
+
+	});
+	
+
+}
+
+
+
+
+
+
+
 
 // 4 - Walls
 // 1 - Food (+5, 60%), small green
@@ -82,7 +190,7 @@ function setBallsNumber(ballsNumber)
 
 function randomizeValues()
 {
-	var colors = ["red", "green", "blue", "black", "purple"];
+	var colors = ["Red", "Green", "Blue", "Black", "Purple"];
 	var used = [0,0,0,0,0];
 
 	var rndTime = Math.floor(Math.random()*60+61); // between 60 and 120
@@ -102,6 +210,14 @@ function randomizeValues()
 		used[rndColor] = 1;
 	}
 
+	var song = Math.floor(Math.random()*2);
+	var songRand;
+
+	if (song == 0)
+		songRand = "golddigger";
+	else
+		songRand = "babyshark";
+
 	maxMonsters = rndMobs;
 	gameTime = rndTime;
 	food_remain = rndBallsNumber;
@@ -109,6 +225,14 @@ function randomizeValues()
 	mediumBallColor = rndBallsColors[1];
 	largeBallColor = rndBallsColors[2];
 
+	document.getElementById("smallBallsColor").value = smallBallColor;
+	document.getElementById("mediumBallsColor").value = mediumBallColor;
+	document.getElementById("largeBallsColor").value = largeBallColor;
+
+	document.getElementById("mobsNumber").value = maxMonsters;
+	document.getElementById("ballsNumber").value = food_remain;
+	document.getElementById("song").value = songRand;
+	document.getElementById("timeChosen").value = gameTime;
 }
 
 function Start() {
