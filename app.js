@@ -6,15 +6,15 @@ var mob3 = new Object();
 var mob4 = new Object();
 var board;
 var score;
-var pac_color;
 var start_time;
 var time_elapsed;
 var interval;
-var interval2;
+var mobsInterval;
 var lastKeyPressed;
 var maxMonsters;
 var health;
 var gameTime;
+var food;
 var timeBonusAvailable;
 var up = 38;
 var down = 40;
@@ -28,47 +28,129 @@ var rows = 25;
 var columns = 12;
 var remainingBalls = 0;
 var audio = new Audio();
-
+var users = {}
+var names = {}
+var keyUpChange = 38;
+var keyDownChange = 40;
+var keyLeftChange = 37;
+var keyRightChange = 39;
+var mobSpeed = "medium";
+var currentUserName;
 
 $(document).ready(function() {
 
+	users['p'] = 'p';
+	names['p'] = 'PPP';
+
 	context = canvas.getContext("2d");
 
-	window.addEventListener("keydown", function(e) {
-		if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
-			e.preventDefault();
-		}
-	}, false);
+
 
 });
 
 function startGame()
 {
 
-	var time = document.getElementById("timeChosen").value;
-	var isNumber = time.match(/^[0-9]+$/) != null;
 
-	if (!isNumber)
+	if(initOptions())
 	{
-		alert("Time field is invalid");
-	}
-	else
-	{
-		setGameTime(time);
+		initBoardSettings();
+		hideAllBut("pacman_gameDiv");
 		playAudio();
+		disableScrollbarArrows();
 		Start();
-
 	}
+
+
 	
 
 }
 
-function setGameTime(time)
+function disableScrollbarArrows()
 {
-	if (time >= 60)
-		gameTime = time;
+	window.addEventListener("keydown", function(e) {
+		if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+			e.preventDefault();
+		}
+	}, false);
+}
+
+function initBoardSettings()
+{
+	document.getElementById("maxTimeLabel").innerHTML = gameTime;
+
+	document.getElementById("keyUpOptionsLabel").innerHTML = document.getElementById("keyUpLabel").innerHTML;
+	document.getElementById("keyDownOptionsLabel").innerHTML = document.getElementById("keyDownLabel").innerHTML;
+	document.getElementById("keyLeftOptionsLabel").innerHTML = document.getElementById("keyLeftLabel").innerHTML;
+	document.getElementById("keyRightOptionsLabel").innerHTML = document.getElementById("keyRightLabel").innerHTML;
+
+	document.getElementById("numOfBalls").innerHTML = food;
+	document.getElementById("smallCol").innerHTML = "<font color='" + smallBallColor + "'>" + smallBallColor + "</font>";
+	document.getElementById("mediumCol").innerHTML =  "<font color='" + mediumBallColor + "'>" + mediumBallColor + "</font>";
+	document.getElementById("largeCol").innerHTML =  "<font color='" + largeBallColor + "'>" + largeBallColor + "</font>";
+	document.getElementById("numOfMobs").innerHTML = maxMonsters;
+	document.getElementById("speedOfMobs").innerHTML = mobSpeed;
+	var song = document.getElementById("song").value;
+	if (song == "golddigger")
+		document.getElementById("songLabel").innerHTML = "Gold Digger";
 	else
-		gameTime = 60;
+		document.getElementById("songLabel").innerHTML = "Baby Shark";
+
+	document.getElementById("usernameLabel").innerHTML = currentUserName;
+
+}
+
+function initOptions()
+{
+	var time = document.getElementById("timeChosen").value;
+	var isNumber = time.match(/^[0-9]+$/) != null;
+
+	if (!isNumber || time < 60)
+	{
+		alert("Time field is invalid or less than 60 seconds");
+		return false;
+	}
+	else
+	{
+		var smallBall = document.getElementById("smallBallsColor").value;
+		var mediumBall = document.getElementById("mediumBallsColor").value;
+		var largeBall = document.getElementById("largeBallsColor").value;
+
+		if (smallBall == mediumBall || smallBall == largeBall || mediumBall == largeBall)
+		{
+			alert("Balls colors must be different");
+			return false;
+		}
+		else
+		{
+			gameTime = time;
+
+			smallBallColor = smallBall;
+			mediumBallColor = mediumBall;
+			largeBallColor = largeBall;
+
+			up = keyUpChange;
+			down = keyDownChange;
+			left = keyLeftChange;
+			right = keyRightChange;
+		
+			mobSpeed = document.getElementById("mobSpeed").value;
+
+			food = document.getElementById("ballsNumber").value;
+	
+			maxMonsters = document.getElementById("mobsNumber").value;
+
+			return true;
+		}
+
+		
+	}
+
+
+
+
+
+
 }
 
 function playAudio()
@@ -84,24 +166,24 @@ function playAudio()
 }
 
 
-function changeKey(key) {
+function changeKey(op) {
 	var label;
 	var div;
 
-	if (key == 'up')
+	if (op == 'up')
 	{
 		label = document.getElementById("keyUpLabel");
 		div = document.getElementById("keyUpDiv")
 	}
 
-	else if (key == 'down')
+	else if (op == 'down')
 	{
 		label = document.getElementById("keyDownLabel");
 		div = document.getElementById("keyDownDiv")
 
 	}
 
-	else if (key == 'left')
+	else if (op == 'left')
 	{
 		label = document.getElementById("keyLeftLabel");
 		div = document.getElementById("keyLeftDiv")
@@ -115,7 +197,6 @@ function changeKey(key) {
 
 	}
 
-	alert("Press a key");
 	div.style.backgroundColor="#66FF66";
 	addEventListener('keydown', function(event) {
 		const key = event.keyCode; // "a", "1", "Shift", etc.
@@ -123,21 +204,89 @@ function changeKey(key) {
 	while (key == "undefined");
 
 	this.removeEventListener('keydown',arguments.callee,false);	
-	if (keyCode == 32)
+	
+	if (key == 32)
 		alert("Space is not a valid key");
 	else
 		label.innerHTML = event.key;
 
 	div.style.backgroundColor="white";
 
+	if (op == 'up')
+		keyUpChange = key;
+
+	else if (op == 'down')
+		keyDownChange = key;
+
+	else if (op == 'left')
+		keyLeftChange = key;
+
+	else
+		keyRightChange = key;
+
+
 	});
 	
 
 }
 
+function hideAllBut(except)
+{
+	document.getElementById("loginDiv").style.display = "none";
+	document.getElementById("optionsDiv").style.display = "none";
+	document.getElementById("registerDiv").style.display = "none";
+	document.getElementById("pacman_gameDiv").style.display = "none";
+	document.getElementById("welcomeDiv").style.display = "none";
 
 
+	document.getElementById(except).style.display = "block";
 
+}
+
+function login()
+{	
+
+	var username = document.getElementById("Login_username").value;
+	var password = document.getElementById("Login_password").value;
+
+	if (users[username] == password)
+	{
+		currentUserName = names[username];
+		hideAllBut("optionsDiv");
+	}
+	
+	else
+		alert("Username or Password incorrect");
+
+}
+
+function register()
+{
+	var username = document.getElementById("Register_username").value;
+	var password = document.getElementById("Register_password").value;
+	var fullName = document.getElementById("Register_fullName").value;
+	var mail = document.getElementById("Register_mail").value;
+	var birthday = document.getElementById("Register_birthday").value;
+
+	
+	if (users[username] != undefined)
+		alert("Username already exists");
+	else
+	{
+		users[username] = password;
+		names[username] = fullName;
+
+		alert("Registraion succeed");
+		hideAllBut("welcomeDiv");
+
+		document.getElementById("Register_username").value = "";
+		document.getElementById("Register_password").value = "";
+		document.getElementById("Register_fullName").value = "";
+		document.getElementById("Register_mail").value = "";
+		document.getElementById("Register_birthday").value = "";
+
+	}
+}
 
 
 
@@ -183,15 +332,15 @@ function setBallsColors(small, medium, large)
 function setBallsNumber(ballsNumber)
 {
 	if (ballsNumber <= 90 && ballsNumber >= 50)
-		food_remain = ballsNumber;
+		food = ballsNumber;
 	else
-		food_remain = 70;
+		food = 70;
 }
 
 function randomizeValues()
 {
-	var colors = ["Red", "Green", "Blue", "Black", "Purple"];
-	var used = [0,0,0,0,0];
+	var colors = ["Red", "Green", "Blue", "Black", "Purple", "Yellow"];
+	var used = [0,0,0,0,0,0];
 
 	var rndTime = Math.floor(Math.random()*60+61); // between 60 and 120
 	var rndBallsNumber = Math.floor(Math.random()*40+51);
@@ -204,7 +353,7 @@ function randomizeValues()
 	for (var i = 0; i < 3; i++)
 	{
 		while (used[rndColor] == 1)
-			rndColor = Math.floor(Math.random()*5);
+			rndColor = Math.floor(Math.random()*6);
 
 		rndBallsColors[i] = colors[rndColor];
 		used[rndColor] = 1;
@@ -220,7 +369,7 @@ function randomizeValues()
 
 	maxMonsters = rndMobs;
 	gameTime = rndTime;
-	food_remain = rndBallsNumber;
+	food = rndBallsNumber;
 	smallBallColor = rndBallsColors[0];
 	mediumBallColor = rndBallsColors[1];
 	largeBallColor = rndBallsColors[2];
@@ -230,7 +379,7 @@ function randomizeValues()
 	document.getElementById("largeBallsColor").value = largeBallColor;
 
 	document.getElementById("mobsNumber").value = maxMonsters;
-	document.getElementById("ballsNumber").value = food_remain;
+	document.getElementById("ballsNumber").value = food;
 	document.getElementById("song").value = songRand;
 	document.getElementById("timeChosen").value = gameTime;
 }
@@ -238,15 +387,11 @@ function randomizeValues()
 function Start() {
 	board = new Array();
 	score = 0;
-	gameTime = 60;
 	timeBonusAvailable = true;
-	lastKeyPressed = "right";
-	pac_color = "yellow";
+	lastKeyPressed = "down";
 	var cnt = 100;
-	var food_remain = 50;
 	var pacman_remain = 1;
 	health = 5;
-	maxMonsters = 4;
 	start_time = new Date();
 	for (var i = 0; i < rows; i++)
 		board[i] = new Array();
@@ -343,11 +488,11 @@ function Start() {
 			} else {
 				if (board[i][j] != 5) {
 					var randomNum = Math.random();
-					if (randomNum <= (1.0 * food_remain) / cnt) {
-						food_remain--;
+					if (randomNum <= (1.0 * food) / cnt) {
+						food--;
 						board[i][j] = 0;
 						actualFood++;
-					} else if (randomNum < (1.0 * (pacman_remain + food_remain)) / cnt) {
+					} else if (randomNum < (1.0 * (pacman_remain + food)) / cnt) {
 						shape.i = i;
 						shape.j = j;
 						pacman_remain--;
@@ -406,8 +551,19 @@ function Start() {
 		},
 		false
 	);
+
 	interval = setInterval(UpdatePosition, 100);
-	interval2 = setInterval(moveMobs, 350);
+
+
+	if (mobSpeed == "Medium")
+		mobsInterval = setInterval(moveMobs, 300);
+
+	else if (mobSpeed == "Slow")
+		mobsInterval = setInterval(moveMobs, 450);
+
+	else
+		mobsInterval = setInterval(moveMobs, 150);
+
 }
 
 function findRandomEmptyCell(board) {
@@ -459,9 +615,10 @@ function GetKeyPressed() {
 
 function Draw() {
 	canvas.width = canvas.width; //clean board
-	lblScore.value = score;
-	healthLabel.value = health;
-	lblTime.value = time_elapsed;
+	document.getElementById("lblScore").innerHTML = score;
+	document.getElementById("lblTime").innerHTML = time_elapsed;
+	document.getElementById("healthLabel").innerHTML = health;
+
 	for (var i = 0; i < rows; i++) {
 		for (var j = 0; j < columns; j++) {
 			var center = new Object();
@@ -471,84 +628,62 @@ function Draw() {
 				var key = GetKeyPressed();
 				context.beginPath();
 				if (key == "left")
-					context.arc(center.x, center.y, base_size/2, 1.15 * Math.PI, 0.85 * Math.PI); // half circle left
-				else if (key =="right")
-					context.arc(center.x, center.y, base_size/2, 0.15 * Math.PI, 1.85 * Math.PI); // half circle right
-				else if (key =="up")
-					context.arc(center.x, center.y, base_size/2, 0 * Math.PI, 2 * Math.PI); // half circle right
-				else if (key =="down")
-					context.arc(center.x, center.y, base_size/2, 0 * Math.PI, 2 * Math.PI); // half circle right
-
-
-				context.lineTo(center.x, center.y);
-				context.fillStyle = pac_color; //color
-				context.fill();
-				context.beginPath();
-				if (key != "up" && key != "down")
-					context.arc(center.x + base_size/12, center.y - base_size/4, base_size/15, 0, 2 * Math.PI); // circle
-				if (key == "down")
 				{
-					context.arc(center.x + base_size/10, center.y - base_size/4, base_size/15, 0, 2 * Math.PI); // circle
-					context.arc(center.x - base_size/10, center.y - base_size/4, base_size/15, 0, 2 * Math.PI); // circle
+					base_image = new Image();
+					base_image.src = './resources/left.jpg';
+					context.drawImage(base_image, center.x - base_size/2, center.y - base_size/2, base_size, base_size);
+				}
+				else if (key =="right")
+				{
+					base_image = new Image();
+					base_image.src = './resources/right.jpg';
+					context.drawImage(base_image, center.x - base_size/2, center.y - base_size/2, base_size, base_size);
+				}
+				else if (key =="up")
+				{
+					base_image = new Image();
+					base_image.src = './resources/back.jpg';
+					context.drawImage(base_image, center.x - base_size/2, center.y - base_size/2, base_size, base_size);
+				}
+				else if (key =="down")
+				{
+					base_image = new Image();
+					base_image.src = './resources/front.jpg';
+					context.drawImage(base_image, center.x - base_size/2, center.y - base_size/2, base_size, base_size);
 				}
 
-				context.fillStyle = "black"; //color
-				context.fill();
+
 			} else if (board[i][j] == 1) {
-				context.beginPath();
-				context.arc(center.x, center.y, 7, 0, 2 * Math.PI); // circle
-				context.fillStyle = "green"; //color
-				context.fill();
+				base_image = new Image();
+				base_image.src = './resources/' + smallBallColor + '.jpg';
+				context.drawImage(base_image, center.x - base_size/6, center.y - base_size/6, base_size/3, base_size/3);
 
 			}
 			else if (board[i][j] == 11) {
-				context.beginPath();
-				context.arc(center.x, center.y, 10, 0, 2 * Math.PI); // circle
-				context.fillStyle = "purple"; //color
-				context.fill();
+				base_image = new Image();
+				base_image.src = './resources/' + mediumBallColor + '.jpg';
+				context.drawImage(base_image, center.x - base_size/4, center.y - base_size/4, base_size/2, base_size/2);
 
 			}
 			else if (board[i][j] == 111) {
-				context.beginPath();
-				context.arc(center.x, center.y, 13, 0, 2 * Math.PI); // circle
-				context.fillStyle = "blue"; //color
-				context.fill();
+				base_image = new Image();
+				base_image.src = './resources/' + largeBallColor + '.jpg';
+				context.drawImage(base_image, center.x - base_size/3, center.y - base_size/3, base_size*2/3, base_size*2/3);
 
 			}
 
 			else if (board[i][j] == 10) {
-				context.beginPath();
-				context.arc(center.x, center.y, 20, 0, 2 * Math.PI); // circle
-				context.fillStyle = "red"; //color
-				context.fill();
-				context.beginPath();
-				context.arc(center.x, center.y, 17, 0, 2 * Math.PI); // circle
-				context.fillStyle = "white"; //color
-				context.fill();
-				context.moveTo(center.x-6, center.y-5);
-				context.lineTo(center.x+6, center.y-5);
-				context.moveTo(center.x, center.y-5);
-				context.lineTo(center.x, center.y+8);
-				context.strokeStyle="red";
-				context.stroke()
+				base_image = new Image();
+				base_image.src = './resources/hourglass.jpg';
+				context.drawImage(base_image, center.x - base_size/2, center.y - base_size/2, base_size, base_size);
 
 			}
 
 			else if (board[i][j] == 9) {
-				context.beginPath();
-				context.arc(center.x, center.y, 20, 0, 2 * Math.PI); // circle
-				context.fillStyle = "red"; //color
-				context.fill();
-				context.beginPath();
-				context.arc(center.x, center.y, 17, 0, 2 * Math.PI); // circle
-				context.fillStyle = "white"; //color
-				context.fill();
-				context.moveTo(center.x-7, center.y);
-				context.lineTo(center.x+7, center.y);
-				context.moveTo(center.x, center.y-7);
-				context.lineTo(center.x, center.y+7);
-				context.strokeStyle="red";
-				context.stroke()
+
+				base_image = new Image();
+				base_image.src = './resources/doctor.jpg';
+				context.drawImage(base_image, center.x - base_size/2, center.y - base_size/2, base_size, base_size);
 
 			}
 			else if (board[i][j] == 4) {
@@ -638,7 +773,8 @@ function UpdatePosition() {
 	}
 
 	if (board[shape.i][shape.j] == 10) {
-		gameTime = gameTime + 10;
+		gameTime = parseFloat(gameTime) + 10;
+		document.getElementById("maxTimeLabel").innerHTML = gameTime;
 	}
 
 	if (checkMobsPlayerLocations())
@@ -665,32 +801,40 @@ function UpdatePosition() {
 
 	if (health == 0) {
 		window.clearInterval(interval);
-		window.clearInterval(interval2);
+		window.clearInterval(mobsInterval);
 		window.alert("Loser!");
+		audio.src = "";
 	}
 
 	else if (remainingBalls == 0)
 	{
 		window.clearInterval(interval);
-		window.clearInterval(interval2);
+		window.clearInterval(mobsInterval);
 		Draw();
 		window.alert("Winner!");
+		audio.src = "";
+
 	}
 
 	else if (gameTime <= time_elapsed)
 	{
+		document.getElementById("lblTime").innerHTML = gameTime;
+
 		if (score < 100)
 		{
-			lblTime.value = gameTime;
 			window.clearInterval(interval);
-			window.clearInterval(interval2);
+			window.clearInterval(mobsInterval);
 			window.alert("You are better than " + score + " points!");
+			audio.src = "";
+
 		}
 		else
 		{
 			window.clearInterval(interval);
-			window.clearInterval(interval2);
+			window.clearInterval(mobsInterval);
 			window.alert("Winner!");
+			audio.src = "";
+
 		}
 
 	}	

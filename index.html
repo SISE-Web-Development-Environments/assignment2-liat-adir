@@ -16,9 +16,22 @@
 
 		</div>
 
-		<br><br><br><br>
+		<br><br><br>
 
-		<div id="login">
+		<div id="welcomeDiv">
+			<h1>
+				Welcome
+			</h1>
+
+			<button id="startLogin" value="Login" onclick="hideAllBut('loginDiv')">Login</button>
+			<button id="startRegister" value="Register" onclick="hideAllBut('registerDiv')">Register</button>
+
+		</div>
+
+
+
+
+		<div id="loginDiv" style="display:none;">
 			<h1>
 				Login
 			</h1>
@@ -35,10 +48,9 @@
 					</td>
 
 					<td style="vertical-align: top;line-height: 50px; text-align: center;">
-						<form method="post" name="loginForm">
-						<input type="text" name="Login_username" maxlength="50">
+						<input type="text" id="Login_username" value='p' maxlength="50">
 						<br>
-						<input type="password" name="Login_password" maxlength="50">
+						<input type="password" id="Login_password" value='p' maxlength="50">
 						<br>
 					</td>
 				</tr>
@@ -53,8 +65,7 @@
 					<td style="text-align: center;">
 						<br>
 						<br>
-						<button type="submit" name="submit" value="Submit">Login</button>
-					</form>
+						<button id="login" value="Login" onclick="login()">Login</button>
 
 					</td>
 				</tr>
@@ -64,7 +75,7 @@
 
 		</div>
 
-		<div id="register">
+		<div id="registerDiv" style="display:none;">
 			<h1>
 				Register
 			</h1>
@@ -84,16 +95,15 @@
 					</td>
 
 					<td style="vertical-align: top;line-height: 50px;">
-						<form method="post" name="registerForm">
-						<input type="text" name="Register_username" maxlength="50">
+						<input type="text" id="Register_username" maxlength="50">
 						<br>
-						<input type="password" name="Register_password" maxlength="50">
+						<input type="password" id="Register_password" maxlength="50">
 						<br>
-						<input type="text" name="Register_fullName" maxlength="50">
+						<input type="text" id="Register_fullName" maxlength="50">
 						<br>
-						<input type="text" name="Register_mail" autocomplete="on" maxlength="50">
+						<input type="text" id="Register_mail" autocomplete="on" maxlength="50">
 						<br>
-						<input type="text" name="Register_birthday" maxlength="50">
+						<input type="text" id="Register_birthday" maxlength="50">
 						<br>
 					</td>
 				</tr>
@@ -108,8 +118,8 @@
 					<td>
 						<br>
 						<br>
-						<button type="submit" name="submit" value="Submit">Register</button>
-					</form>
+						<button type="reset" id="registerBtn" value="Register" onclick="register()">Register</button>
+					
 
 					</td>
 				</tr>
@@ -122,7 +132,7 @@
 
 		</div>
 
-		<div id="options">
+		<div id="optionsDiv" style="display:none;">
 
 			<h1>
 				Options
@@ -179,7 +189,8 @@
 						Small Balls color:<br>
 						Medium Balls color:<br>
 						Large Balls color:<br>
-						Monsters:
+						Number of Monsters:<br>
+						Speed of Monsters:
 					</td>
 
 					<td id="td2Style">
@@ -230,33 +241,35 @@
 						  </select>
 
 						  <br>
-
 						  <select id="smallBallsColor">
-							<option value="Red" selected>Red</option>
-							<option value="Green">Green</option>
-							<option value="Blue">Blue</option>
-							<option value="Black">Black</option>
-							<option value="Purple">Purple</option>
+							<option value="Red" class='red' selected>Red</option>
+							<option value="Green" class='green'>Green</option>
+							<option value="Blue" class='blue'>Blue</option>
+							<option value="Yellow" class='yellow'>Yellow</option>
+							<option value="Black" class='black'>Black</option>
+							<option value="Purple" class='purple'>Purple</option>
 						  </select>
 						  
 						  <br>
 
 						  <select id="mediumBallsColor">
-							<option value="Red">Red</option>
-							<option value="Green" selected>Green</option>
-							<option value="Blue">Blue</option>
-							<option value="Black">Black</option>
-							<option value="Purple">Purple</option>
+							<option value="Red" class='red'>Red</option>
+							<option value="Green" class='green' selected>Green</option>
+							<option value="Blue" class='blue'>Blue</option>
+							<option value="Yellow" class='yellow'>Yellow</option>
+							<option value="Black" class='black'>Black</option>
+							<option value="Purple" class='purple'>Purple</option>
 						  </select>
 						  
 						  <br>
 
 						  <select id="largeBallsColor">
-							<option value="Red">Red</option>
-							<option value="Green">Green</option>
-							<option value="Blue" selected>Blue</option>
-							<option value="Black">Black</option>
-							<option value="Purple">Purple</option>
+							<option value="Red" class='red'>Red</option>
+							<option value="Green" class='green'>Green</option>
+							<option value="Blue" class='blue' selected>Blue</option>
+							<option value="Yellow" class='yellow'>Yellow</option>
+							<option value="Black" class='black'>Black</option>
+							<option value="Purple" class='purple'>Purple</option>
 						  </select>
 
 
@@ -267,6 +280,15 @@
 							<option value="2" selected>2</option>
 							<option value="3">3</option>
 							<option value="4">4</option>
+						  </select>
+
+						  <br>
+
+
+						  <select id="mobSpeed">
+							<option value="Slow">Slow</option>
+							<option value="Medium" selected>Medium</option>
+							<option value="Fast">Fast</option>
 						  </select>
 
 					</td>
@@ -304,26 +326,154 @@
 
 		</div>
 
-		<div id="pacman_game">
+		<div id="pacman_gameDiv" style="display:none;">
 
 			<h1>
 				Pacorona
 			</h1>
 			<table style="width:100%">
 				<tr>
-					<td style="width:20%;text-align:center;vertical-align:top;">
-						<div id="score">
-							<label for="lblScore">SCORE:</label>
-							<input id="lblScore" type="text" />
-						</div>
-						<div id="time">
-							<label for="lblTime">TIME:</label>
-							<input id="lblTime" type="text" />
-						</div>
-						<div id="health">
-							<label for="healthLabel">Health:</label>
-							<input id="healthLabel" type="text" />
-						</div>
+					<td style="width:20%;text-align:center;vertical-align:top;  line-height: 30px; border:2px solid black;">
+
+	
+						<div id="usernameBox">
+						<label id="usernameLabel"></label><br>
+					</div>
+
+						<table>
+
+							<tr>
+								<td style="text-align: left;">
+									Score:
+								</td>
+
+								<td>
+									<label id="lblScore"></label><br>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align: left;">
+									Time:
+								</td>
+
+								<td>
+									<label id="lblTime"></label><br>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align: left;">
+									Maximum Time:
+
+								</td>
+
+								<td>
+									<label id="maxTimeLabel"></label><br>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align: left; border-bottom: 2px solid black;">
+									Health:
+								</td>
+
+								<td style="border-bottom: 2px solid black;">
+									<label id="healthLabel"></label><br>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align: left;">
+									Key Up:
+								</td>
+
+								<td>
+									<label id="keyUpOptionsLabel"></label><br>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align: left;">
+									Key Down:
+								</td>
+
+								<td>
+									<label id="keyDownOptionsLabel"></label><br>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align: left;">
+									Key Left:
+								</td>
+
+								<td>
+									<label id="keyLeftOptionsLabel"></label><br>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align: left;">
+									Key Right:
+								</td>
+
+								<td>
+									<label id="keyRightOptionsLabel"></label><br>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align: left;">
+									Number of Balls:
+								</td>
+
+								<td>
+									<label id="numOfBalls"></label><br>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align: left;">
+									Colors of Balls:
+								</td>
+
+								<td>
+									<label id="smallCol"></label>,<label id="mediumCol"></label>,<label id="largeCol"></label>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align: left;">
+									Number of Monsters:
+								</td>
+
+								<td>
+									<label id="numOfMobs"></label><br>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align: left;">
+									Speed of Monsters:
+								</td>
+
+								<td>
+									<label id="speedOfMobs"></label><br>
+								</td>
+							</tr>
+
+							<tr>
+								<td style="text-align: left;">
+									Song:
+								</td>
+
+								<td>
+									<label id="songLabel"></label><br>
+								</td>
+							</tr>
+						</table>
+
 					</td>
 
 					<td style="width:80%;text-align:center">
