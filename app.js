@@ -4,11 +4,15 @@ var mob1 = new Object();
 var mob2 = new Object();
 var mob3 = new Object();
 var mob4 = new Object();
+var movingFood = new Object();
+var movingFoodAlive = true;
 var board;
 var score;
 var start_time;
 var time_elapsed;
+var timeLeft;
 var interval;
+var movingFoodInterval;
 var mobsInterval;
 var lastKeyPressed;
 var maxMonsters;
@@ -34,19 +38,83 @@ var keyUpChange = 38;
 var keyDownChange = 40;
 var keyLeftChange = 37;
 var keyRightChange = 39;
-var mobSpeed = "medium";
+var mobSpeed = "Medium";
 var currentUserName;
+var titleColors;
+var shown = false;
 
 $(document).ready(function() {
+
+	titleColors = ["White", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Purple"];
+	
+	window.setInterval(colorTitle, 100);
 
 	users['p'] = 'p';
 	names['p'] = 'PPP';
 
 	context = canvas.getContext("2d");
 
+	$("#about").click(function ()
+      {
+		 $("#modalBox").show();
 
+
+		 window.addEventListener('click', function(e){   
+
+			  if (!(document.getElementById('about').contains(e.target) || document.getElementById('modalBox').contains(e.target)))
+				  document.getElementById("modalBox").style.display = 'none';
+			
+		});
+
+	});
+
+	  
+
+
+	windows.clearInterval(colorTitle);
 
 });
+
+
+function checkRegistrationFields()
+{
+	
+	var reg_username = $("#Register_username").val();
+	var reg_password = $("#Register_password").val();
+	var reg_fullName = $("#Register_fullName").val();
+	var reg_mail = $("#Register_mail").val();
+
+	$("#lbl_username_error").html("Invalid");
+	$("#lbl_username_error").css('color','Red');
+
+
+}
+
+
+function shiftTitleColors()
+{
+	var col = titleColors[7];
+
+	for (var i = 7; i > 0; i--)
+		titleColors[i] = titleColors[i-1];
+
+	titleColors[0] = col;
+}
+
+function colorTitle()
+{
+	document.getElementById("lbl_p").innerHTML = "<font color='" + titleColors[0] + "'>" + "P" + "</font>";
+	document.getElementById("lbl_a1").innerHTML = "<font color='" + titleColors[1] + "'>" + "a" + "</font>";
+	document.getElementById("lbl_c").innerHTML = "<font color='" + titleColors[2] + "'>" + "c" + "</font>";
+	document.getElementById("lbl_o1").innerHTML = "<font color='" + titleColors[3] + "'>" + "o" + "</font>";
+	document.getElementById("lbl_r").innerHTML = "<font color='" + titleColors[4] + "'>" + "r" + "</font>";
+	document.getElementById("lbl_o2").innerHTML = "<font color='" + titleColors[5] + "'>" + "o" + "</font>";
+	document.getElementById("lbl_n").innerHTML = "<font color='" + titleColors[6] + "'>" + "n" + "</font>";
+	document.getElementById("lbl_a2").innerHTML = "<font color='" + titleColors[7] + "'>" + "a" + "</font>";
+
+	shiftTitleColors();
+
+}
 
 function startGame()
 {
@@ -77,7 +145,6 @@ function disableScrollbarArrows()
 
 function initBoardSettings()
 {
-	document.getElementById("maxTimeLabel").innerHTML = gameTime;
 
 	document.getElementById("keyUpOptionsLabel").innerHTML = document.getElementById("keyUpLabel").innerHTML;
 	document.getElementById("keyDownOptionsLabel").innerHTML = document.getElementById("keyDownLabel").innerHTML;
@@ -124,6 +191,7 @@ function initOptions()
 		else
 		{
 			gameTime = time;
+			timeLeft = time;
 
 			smallBallColor = smallBall;
 			mediumBallColor = mediumBall;
@@ -262,6 +330,9 @@ function login()
 
 function register()
 {
+
+	checkRegistrationFields();
+
 	var username = document.getElementById("Register_username").value;
 	var password = document.getElementById("Register_password").value;
 	var fullName = document.getElementById("Register_fullName").value;
@@ -300,6 +371,7 @@ function register()
 // 5 - monster
 // 9 - health (+1 life)
 // 10 - timeBonus (+10)
+// 7 - moving food (+50 score)
 
 function initButtons(upKey, downKey, leftKey, rightKey)
 {
@@ -315,6 +387,8 @@ function setGameTime(time)
 		gameTime = time;
 	else
 		gameTime = 60;
+
+	timeLeft = gameTime;
 }
 
 function setMobs(mobsNumber)
@@ -367,8 +441,12 @@ function randomizeValues()
 	else
 		songRand = "babyshark";
 
+	var rndSpeed = Math.floor(Math.random()*3) + 1;
+	mobSpeed = rndSpeed;
+
 	maxMonsters = rndMobs;
 	gameTime = rndTime;
+	timeLeft = rndTime;
 	food = rndBallsNumber;
 	smallBallColor = rndBallsColors[0];
 	mediumBallColor = rndBallsColors[1];
@@ -382,6 +460,7 @@ function randomizeValues()
 	document.getElementById("ballsNumber").value = food;
 	document.getElementById("song").value = songRand;
 	document.getElementById("timeChosen").value = gameTime;
+	document.getElementById("mobSpeed").value = mobSpeed;
 }
 
 function Start() {
@@ -507,6 +586,9 @@ function Start() {
 		}
 	}
 
+	initMovingFood();
+
+
 	var healthCell = findRandomEmptyCell(board);
 	board[healthCell[0]][healthCell[1]] = 9;
 
@@ -553,16 +635,17 @@ function Start() {
 	);
 
 	interval = setInterval(UpdatePosition, 100);
+	movingFoodInterval = setInterval(moveMovingFood, 200);
 
 
-	if (mobSpeed == "Medium")
+	if (mobSpeed == "2")
 		mobsInterval = setInterval(moveMobs, 300);
 
-	else if (mobSpeed == "Slow")
-		mobsInterval = setInterval(moveMobs, 450);
+	else if (mobSpeed == "1")
+		mobsInterval = setInterval(moveMobs, 400);
 
 	else
-		mobsInterval = setInterval(moveMobs, 150);
+		mobsInterval = setInterval(moveMobs, 200);
 
 }
 
@@ -570,16 +653,6 @@ function findRandomEmptyCell(board) {
 	var i = Math.floor(Math.random() * (rows));
 	var j = Math.floor(Math.random() * (columns));
 	while (board[i][j] != 0) {
-		i = Math.floor(Math.random() * (rows));
-		j = Math.floor(Math.random() * (columns));
-	}
-	return [i, j];
-}
-
-function findRandomFoodCell(board) {
-	var i = Math.floor(Math.random() * (rows));
-	var j = Math.floor(Math.random() * (columns));
-	while (board[i][j] != 1) {
 		i = Math.floor(Math.random() * (rows));
 		j = Math.floor(Math.random() * (columns));
 	}
@@ -616,7 +689,7 @@ function GetKeyPressed() {
 function Draw() {
 	canvas.width = canvas.width; //clean board
 	document.getElementById("lblScore").innerHTML = score;
-	document.getElementById("lblTime").innerHTML = time_elapsed;
+	document.getElementById("lblTime").innerHTML = timeLeft.toFixed(2);
 	document.getElementById("healthLabel").innerHTML = health;
 
 	for (var i = 0; i < rows; i++) {
@@ -692,6 +765,9 @@ function Draw() {
 				context.drawImage(base_image, center.x - base_size/2, center.y - base_size/2, base_size, base_size);
 			}
 
+			if (movingFoodAlive && i == movingFood.i && j == movingFood.j)
+				drawMovingFood(context, center);
+
 			if (i == mob1.i && j == mob1.j)
 				drawMob(context, center);
 
@@ -704,9 +780,9 @@ function Draw() {
 				if (i == mob3.i && j == mob3.j)
 					drawMob(context, center);
 
-				if (mob4.i != -1)
-					if (i == mob4.i && j == mob4.j)
-						drawMob(context, center);
+			if (mob4.i != -1)
+				if (i == mob4.i && j == mob4.j)
+					drawMob(context, center);
 			
 		}
 	}
@@ -718,12 +794,14 @@ function drawMob(context, center)
 	base_image.src = './resources/mob.jpg';
 	context.drawImage(base_image, center.x - base_size/2, center.y - base_size/2, base_size, base_size);
 
-	/*
-	context.beginPath();
-	context.rect(center.x - 30, center.y - 30, 60, 60);
-	context.fillStyle = "red"; //color
-	context.fill();
-	*/
+}
+
+function drawMovingFood(context, center)
+{
+	base_image = new Image();
+	base_image.src = './resources/movingFood.jpg';
+	context.drawImage(base_image, center.x - base_size/2, center.y - base_size/2, base_size, base_size);
+
 }
 
 function UpdatePosition() {
@@ -766,6 +844,12 @@ function UpdatePosition() {
 		remainingBalls--;
 	}
 
+	if (movingFoodAlive && checkMovingFoodPlayerLocation())
+	{
+		score = score + 50;
+		movingFoodAlive = false;
+		window.clearInterval(movingFoodInterval);
+	}
 
 
 	if (board[shape.i][shape.j] == 9) {
@@ -774,11 +858,12 @@ function UpdatePosition() {
 
 	if (board[shape.i][shape.j] == 10) {
 		gameTime = parseFloat(gameTime) + 10;
-		document.getElementById("maxTimeLabel").innerHTML = gameTime;
+		timeLeft = parseFloat(timeLeft) + 10;
 	}
 
 	if (checkMobsPlayerLocations())
 	{
+		board[shape.i][shape.j] = 0;
 		score = score - 10;
 		if (score < 0)
 			score = 0;
@@ -792,8 +877,9 @@ function UpdatePosition() {
 	board[shape.i][shape.j] = 2;
 	var currentTime = new Date();
 	time_elapsed = (currentTime - start_time) / 1000;
+	timeLeft = timeLeft - 0.1;
 
-	if (timeBonusAvailable && ((gameTime-time_elapsed) <= 10)) {
+	if (timeBonusAvailable && (timeLeft <= 10)) {
 		var timeBonusCell = findRandomEmptyCell(board);
 		board[timeBonusCell[0]][timeBonusCell[1]] = 10;
 		timeBonusAvailable = false;
@@ -802,6 +888,7 @@ function UpdatePosition() {
 	if (health == 0) {
 		window.clearInterval(interval);
 		window.clearInterval(mobsInterval);
+		window.clearInterval(movingFoodInterval);
 		window.alert("Loser!");
 		audio.src = "";
 	}
@@ -810,20 +897,22 @@ function UpdatePosition() {
 	{
 		window.clearInterval(interval);
 		window.clearInterval(mobsInterval);
+		window.clearInterval(movingFoodInterval);
 		Draw();
 		window.alert("Winner!");
 		audio.src = "";
 
 	}
 
-	else if (gameTime <= time_elapsed)
+	else if (timeLeft <= 0)
 	{
-		document.getElementById("lblTime").innerHTML = gameTime;
+		document.getElementById("lblTime").innerHTML = "0.00";
 
 		if (score < 100)
 		{
 			window.clearInterval(interval);
 			window.clearInterval(mobsInterval);
+			window.clearInterval(movingFoodInterval);
 			window.alert("You are better than " + score + " points!");
 			audio.src = "";
 
@@ -832,6 +921,7 @@ function UpdatePosition() {
 		{
 			window.clearInterval(interval);
 			window.clearInterval(mobsInterval);
+			window.clearInterval(movingFoodInterval);
 			window.alert("Winner!");
 			audio.src = "";
 
@@ -841,6 +931,14 @@ function UpdatePosition() {
 	 else {
 		Draw();
 	}
+}
+
+function checkMovingFoodPlayerLocation()
+{
+	if (movingFood.i == shape.i && movingFood.j == shape.j)
+		return true;
+
+	return false;
 }
 
 function checkMobsPlayerLocations()
@@ -859,6 +957,14 @@ function checkMobsPlayerLocations()
 
 	return false;
 
+}
+
+function initMovingFood()
+{
+	var emptyCell = findRandomEmptyCell(board);
+	movingFood.i = emptyCell[0];
+	movingFood.j = emptyCell[1];
+	board[emptyCell[0]][emptyCell[1]] = 7;
 }
 
 function initMobs()
@@ -912,6 +1018,60 @@ function moveMobs()
 	if (mob4.i != -1)
 		moveMob(mob4);
 }
+
+function moveMovingFood()
+{
+	var moved = false;
+	var rnd;
+
+
+	while (!moved)
+	{
+		rnd = Math.floor(Math.random()*4);
+
+
+		if (rnd == 0)
+		{
+			if (movingFood.i > 0 && board[movingFood.imovingFood- 1][movingFood.j] != 4)
+				movingFood.i--;
+				moved = true;
+			}
+
+		else if (rnd == 1)
+		{
+			if (movingFood.i < rows-1 && board[movingFood.i + 1][movingFood.j] != 4) 
+				movingFood.i++;
+				moved = true;
+			}
+
+		else if (rnd == 2)
+		{
+			if (movingFood.j > 0 && board[movingFood.i][movingFood.j - 1] != 4) 
+				movingFood.j--;
+				moved = true;
+
+			}
+		else
+		{
+
+			if (movingFood.j < columns-1 && board[movingFood.i][movingFood.j + 1] != 4) 
+				movingFood.j++;
+				moved = true;
+
+		}
+
+
+	}
+
+
+}
+
+function showAbout()
+{
+	document.getElementById("modalBox").style.display = "block";
+}
+
+
 
 function moveMob(mob)
 {
@@ -989,20 +1149,21 @@ function moveMob(mob)
 			}
 
 
-
-
-
-
-
-			
-
 		}
 	}
 
 
 	if (mob.i == shape.i && mob.j == shape.j)
 	{
-		
+		board[shape.i][shape.j] = 0;
+		score = score - 10;
+		if (score < 0)
+			score = 0;
+		health--;
+		var newCell = findRandomEmptyCell(board);
+		shape.i = newCell[0];
+		shape.j = newCell[1];
+		initMobs();
 	}
 
 

@@ -12,19 +12,69 @@
 
 	<body>
 
-		<div id="header">
+		<div id="menu">
 
-		</div>
+					<div style="float: left; vertical-align: middle;">
 
-		<br><br><br>
+							<a href="./index.html">
+								<img src="./resources/logo.jpg" class="menuItem" style="vertical-align:middle;;display:inline-block;margin-left: 15px;" height=70px width=70px>
+							</a>
+						</div>
+
+
+
+						<div style="float:right; vertical-align: middle;">
+							<img src="./resources/authors.jpg" class="menuItem" style="vertical-align:middle;;display:inline-block;margin-right: 15px;">
+
+						</div>
+						<div style="text-align: center;">
+
+						<div style="font-size: 32px; font-weight: bold;">
+
+							<label id="lbl_p"></label>
+							<label id="lbl_a1"></label>
+							<label id="lbl_c"></label>
+							<label id="lbl_o1"></label>
+							<label id="lbl_r"></label>
+							<label id="lbl_o2"></label>
+							<label id="lbl_n"></label>
+							<label id="lbl_a2"></label>
+
+						</div>
+
+						<div style="font-size: 16px; font-weight: bold;">
+							Sick Game
+						</div>
+
+						</div>
+
+
+			</div>
+
+		<br><br>
 
 		<div id="welcomeDiv">
-			<h1>
-				Welcome
-			</h1>
+			<br><br><br><br>
 
-			<button id="startLogin" value="Login" onclick="hideAllBut('loginDiv')">Login</button>
-			<button id="startRegister" value="Register" onclick="hideAllBut('registerDiv')">Register</button>
+			<div id="rounded" style="width:500px; text-align: center;">
+
+				<h1>
+					Welcome to Pacorona!
+				</h1>
+	
+				<button id="startLogin" class="button" value="Login" onclick="hideAllBut('loginDiv')">Login</button>
+				<button id="startRegister" class="button" value="Register" onclick="hideAllBut('registerDiv')">Register</button>
+
+				<br><br><br><br><br>
+
+				<button id="about" class="button" value="About" onclick="showAbout()">About</button>
+
+				<section id="modalBox">
+					Modal box
+				</section>
+
+			</div>
+
 
 		</div>
 
@@ -32,11 +82,15 @@
 
 
 		<div id="loginDiv" style="display:none;">
-			<h1>
-				Login
-			</h1>
+			<br><br><br><br>
 
-			<table style="margin-left:auto;margin-right:auto;">
+			<div id="rounded" style="width: 30%;">
+
+				<h1>
+					Login
+				</h1>
+
+				<table style="margin-left:auto;margin-right:auto;">
 				<tr>
 					<td style="vertical-align: top; line-height: 50px; text-align: center;">
 						Username:<br>
@@ -65,7 +119,6 @@
 					<td style="text-align: center;">
 						<br>
 						<br>
-						<button id="login" value="Login" onclick="login()">Login</button>
 
 					</td>
 				</tr>
@@ -73,12 +126,26 @@
 
 			</table>
 
+			<div style="text-align: center;">
+				<button id="login" class='button' value="Login" onclick="login()">Login</button>
+			</div>
+
+			</div>
+
 		</div>
 
 		<div id="registerDiv" style="display:none;">
-			<h1>
-				Register
-			</h1>
+
+			<br><br><br><br>
+
+
+
+
+			<div id="rounded" style="width: 30%;">
+
+				<h1>
+					Register
+				</h1>
 
 			<table style="margin-left:auto;margin-right:auto;">
 				<tr>
@@ -94,16 +161,21 @@
 
 					</td>
 
-					<td style="vertical-align: top;line-height: 50px;">
+					<td style="vertical-align: top;line-height: 50px; width:300px">
 						<input type="text" id="Register_username" maxlength="50">
+						<label id="lbl_username_error"></label>
 						<br>
 						<input type="password" id="Register_password" maxlength="50">
+						<label id="lbl_password_error"></label>
 						<br>
 						<input type="text" id="Register_fullName" maxlength="50">
+						<label id="lbl_fullName_error"></label>
 						<br>
 						<input type="text" id="Register_mail" autocomplete="on" maxlength="50">
+						<label id="lbl_mail_error"></label>
 						<br>
 						<input type="text" id="Register_birthday" maxlength="50">
+						<label id="lbl_birthday_error"></label>
 						<br>
 					</td>
 				</tr>
@@ -118,7 +190,6 @@
 					<td>
 						<br>
 						<br>
-						<button type="reset" id="registerBtn" value="Register" onclick="register()">Register</button>
 					
 
 					</td>
@@ -127,6 +198,11 @@
 
 			</table>
 
+			<div style="text-align: center;">
+			<button type="reset" class="button" id="registerBtn" value="Register" onclick="register()">Register</button>
+			</div>
+
+			</div>
 				
 
 
@@ -134,10 +210,18 @@
 
 		<div id="optionsDiv" style="display:none;">
 
-			<h1>
-				Options
-			</h1>
-			<table style="margin-left:auto;margin-right:auto; border: 2px solid black;">
+			<br><br><br><br>
+
+
+
+			<div id="rounded" style="width: 500px;">
+
+
+				<h1>
+					Options
+				</h1>
+
+			<table style="margin-left:auto;margin-right:auto">
 				<tr>
 					<td id="td1Style">
 						Keys
@@ -158,16 +242,16 @@
 					<td id="td2Style">
 
 
-						<div id="keyUpDiv" style="border:2px solid black; text-align: center; margin: 10px; width: 100px; line-height: 50px;" onclick="changeKey('up')">
+						<div id="keyUpDiv" class="keyButton" onclick="changeKey('up')">
 							<label id="keyUpLabel" >ArrowUp</label>
 						</div>
-						<div id="keyDownDiv" style="border:2px solid black; text-align: center; margin: 10px; width: 100px;	line-height: 50px;" onclick="changeKey('down')">
+						<div id="keyDownDiv" class="keyButton" onclick="changeKey('down')">
 							<label id="keyDownLabel" >ArrowDown</label>
 						</div>
-						<div id="keyLeftDiv" style="border:2px solid black; text-align: center; margin: 10px; width: 100px;	line-height: 50px;" onclick="changeKey('left')">
+						<div id="keyLeftDiv"  class="keyButton" onclick="changeKey('left')">
 							<label id="keyLeftLabel" >ArrowLeft</label>
 						</div>
-						<div id="keyRightDiv" style="border:2px solid black; text-align: center; margin: 10px; width: 100px; line-height: 50px;" onclick="changeKey('right')">
+						<div id="keyRightDiv"  class="keyButton" onclick="changeKey('right')">
 							<label id="keyRightLabel" >ArrowRight</label>
 						</div>
 
@@ -286,9 +370,9 @@
 
 
 						  <select id="mobSpeed">
-							<option value="Slow">Slow</option>
-							<option value="Medium" selected>Medium</option>
-							<option value="Fast">Fast</option>
+							<option value="1">Slow</option>
+							<option value="2" selected>Medium</option>
+							<option value="3">Fast</option>
 						  </select>
 
 					</td>
@@ -296,21 +380,22 @@
 				</tr>
 
 				<tr>
-					<td style="border-right: 2px solid black; vertical-align: top;	line-height: 50px; width: 100px; text-align: center;">;
+					<td id="td1Style">
 						Other
 						<br>
 					</td>
 
-					<td style="width: 50px;">
+					<td id="td2Style">
+						
 					</td>
 
-					<td style="vertical-align: top; line-height: 50px;">
+					<td id="td2Style">
 						Time:<br>
 						Song:
 
 					</td>
 
-					<td style="vertical-align: top; line-height: 50px;">
+					<td id="td2Style">
 						<input type="text" id="timeChosen" name="timeChosen" value="60"><br>
 						<select id="song">
 							<option value="golddigger">Gold Digger</option>
@@ -319,26 +404,57 @@
 					</td>
 
 				</tr>
+
+				<tr>
+					<td style="border-right: 2px solid black; vertical-align: top;	line-height: 50px; width: 100px; text-align: center; font-weight: bold; font-size: 20px;">
+						Random
+						<br>
+					</td>
+
+					<td style="width: 50px;">
+					</td>
+
+					<td style="vertical-align: top; line-height: 50px;">
+						Randomize Settings
+
+					</td>
+
+					<td style="vertical-align: top; line-height: 50px; text-align: center;">
+						<button id="randomize" class="button" value="Randomize" onclick="randomizeValues()">Randomize</button>
+
+					</td>
+
+				</tr>
 			</table>
-						
-			<button id="startGame" value="Start" onclick="startGame()">Start</button>
-			<button id="randomize" value="Randomize" onclick="randomizeValues()">Randomize</button>
+			</div>
+					
+			<br><br>
+
+			<div id="roundedStart" style="width: 100px; text-align: center;" onclick="startGame()">
+				Start
+			</div>
 
 		</div>
 
 		<div id="pacman_gameDiv" style="display:none;">
 
 			<h1>
-				Pacorona
+				<br>
 			</h1>
 			<table style="width:100%">
 				<tr>
-					<td style="width:20%;text-align:center;vertical-align:top;  line-height: 30px; border:2px solid black;">
+
+
+
+					<td style="width:20%;text-align:center;vertical-align:top;  line-height: 30px;">
+						<div id="rounded">
 
 	
 						<div id="usernameBox">
 						<label id="usernameLabel"></label><br>
 					</div>
+
+
 
 						<table>
 
@@ -354,7 +470,7 @@
 
 							<tr>
 								<td style="text-align: left;">
-									Time:
+									Time Left:
 								</td>
 
 								<td>
@@ -362,16 +478,6 @@
 								</td>
 							</tr>
 
-							<tr>
-								<td style="text-align: left;">
-									Maximum Time:
-
-								</td>
-
-								<td>
-									<label id="maxTimeLabel"></label><br>
-								</td>
-							</tr>
 
 							<tr>
 								<td style="text-align: left; border-bottom: 2px solid black;">
@@ -425,7 +531,7 @@
 
 							<tr>
 								<td style="text-align: left;">
-									Number of Balls:
+									# of Balls:
 								</td>
 
 								<td>
@@ -435,7 +541,7 @@
 
 							<tr>
 								<td style="text-align: left;">
-									Colors of Balls:
+									Balls Colors:
 								</td>
 
 								<td>
@@ -445,7 +551,7 @@
 
 							<tr>
 								<td style="text-align: left;">
-									Number of Monsters:
+									# of Monsters:
 								</td>
 
 								<td>
@@ -455,7 +561,7 @@
 
 							<tr>
 								<td style="text-align: left;">
-									Speed of Monsters:
+									Monsters Speed:
 								</td>
 
 								<td>
@@ -473,12 +579,13 @@
 								</td>
 							</tr>
 						</table>
+					</div>
 
 					</td>
 
 					<td style="width:80%;text-align:center">
 						<div id="game">
-							<canvas id="canvas" height="480" width="1000" style="border: 2px solid black;"></canvas>
+							<canvas id="canvas" height="480" width="1000" style="border-radius:25px; border: 2px solid black;box-shadow: 5px 5px teal;"></canvas>
 						</div>
 					</td>
 				</tr>
