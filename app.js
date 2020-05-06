@@ -1063,6 +1063,13 @@ function moveMovingFood()
 
 	}
 
+	if (movingFood.i == shape.i && movingFood.j == shape.j)
+	{
+		score = score + 50;
+		movingFoodAlive = false;
+		window.clearInterval(movingFoodInterval);
+	}
+
 
 }
 
