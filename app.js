@@ -47,7 +47,7 @@ $(document).ready(function() {
 
 	disableScrollbarArrows();
 
-	
+
 	titleColors = ["White", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Purple"];
 	
 	window.setInterval(colorTitle, 100);
@@ -1024,8 +1024,8 @@ function UpdatePosition() {
 		window.clearInterval(interval);
 		window.clearInterval(mobsInterval);
 		window.clearInterval(movingFoodInterval);
-		window.alert("Loser!");
 		audio.src = "";
+		window.alert("Loser!");
 	}
 
 	else if (remainingBalls == 0)
@@ -1034,8 +1034,8 @@ function UpdatePosition() {
 		window.clearInterval(mobsInterval);
 		window.clearInterval(movingFoodInterval);
 		Draw();
-		window.alert("Winner!");
 		audio.src = "";
+		window.alert("Winner!");
 
 	}
 
@@ -1048,8 +1048,8 @@ function UpdatePosition() {
 			window.clearInterval(interval);
 			window.clearInterval(mobsInterval);
 			window.clearInterval(movingFoodInterval);
-			window.alert("You are better than " + score + " points!");
 			audio.src = "";
+			window.alert("You are better than " + score + " points!");
 
 		}
 		else
@@ -1057,8 +1057,8 @@ function UpdatePosition() {
 			window.clearInterval(interval);
 			window.clearInterval(mobsInterval);
 			window.clearInterval(movingFoodInterval);
-			window.alert("Winner!");
 			audio.src = "";
+			window.alert("Winner!");
 
 		}
 
