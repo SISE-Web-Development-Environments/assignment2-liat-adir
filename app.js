@@ -50,10 +50,10 @@ $(document).ready(function() {
 
 	titleColors = ["White", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Purple"];
 	
-	window.setInterval(colorTitle, 100);
+	window.setInterval(colorTitle, 200);
 
 	users['p'] = 'p';
-	names['p'] = 'PPP';
+	names['p'] = 'User P';
 
 	context = canvas.getContext("2d");
 
