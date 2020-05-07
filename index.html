@@ -6,8 +6,9 @@
 		<link rel="stylesheet" type="text/css" href="style.css" />
 		<title>Pacorona</title>
 		<link rel="icon" href="./resources/icon.png">
-
-
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	</head>
 
 	<body>
@@ -70,7 +71,47 @@
 				<button id="about" class="button" value="About" onclick="showAbout()">About</button>
 
 				<section id="modalBox">
-					Modal box
+					<div style="text-decoration: underline;font-weight: bold; font-size: 16px;">
+						About	
+						<button class="close" onclick="closeAbout()" value=&times;>&times;</button>				
+					</div>
+
+
+					<br><br><br>
+
+					
+					<div style="text-align: left;">
+					<div style="text-decoration: underline;font-weight: bold;">
+						Authors:
+					</div>
+
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Liat Cohen<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adir Biran<br>
+					</div>
+
+					<br>
+
+					<div style="text-align: left;">
+					<div style="text-decoration: underline;font-weight: bold;">
+						Uses of jQuery:
+					</div>
+					Registration form validation, Datepicker, Dynamically enable/disable user functionality, Dynamically changing UI, Modal Dialog box and more...
+					</div>
+
+					<br>
+
+					<div style="text-align: left;">
+					<div style="text-decoration: underline;font-weight: bold;">
+						Difficulties:
+					</div>
+					Synchronizing the elements of JavaScript, HTML and jQuery.<br>
+					Learning new jQuery syntax.<br>
+					Not catching the corona virus.
+					</div>
+
+
+					<br><br><br>
+					Web Development Environments, 05/2020
 				</section>
 
 			</div>
@@ -152,29 +193,29 @@
 					<td style="vertical-align: top; line-height: 50px;">
 						Username:<br>
 						Password:<br>
-						Full Name:<br>
+						Name:<br>
 						Mail:<br>
 						Birthday:<br>
 
 					</td>
-					<td style="width: 50px;">
+					<td style="width: 80px;">
 
 					</td>
 
-					<td style="vertical-align: top;line-height: 50px; width:300px">
-						<input type="text" id="Register_username" maxlength="50">
+					<td style="vertical-align: top;line-height: 50px; width:400px">
+						<input type="text" id="Register_username" maxlength="50" style="margin-right: 30px;">
 						<label id="lbl_username_error"></label>
 						<br>
-						<input type="password" id="Register_password" maxlength="50">
+						<input type="password" id="Register_password" maxlength="50" style="margin-right: 30px;">
 						<label id="lbl_password_error"></label>
 						<br>
-						<input type="text" id="Register_fullName" maxlength="50">
+						<input type="text" id="Register_fullName" maxlength="50" style="margin-right: 30px;">
 						<label id="lbl_fullName_error"></label>
 						<br>
-						<input type="text" id="Register_mail" autocomplete="on" maxlength="50">
+						<input type="text" id="Register_mail" autocomplete="on" maxlength="50" style="margin-right: 30px;">
 						<label id="lbl_mail_error"></label>
 						<br>
-						<input type="text" id="Register_birthday" maxlength="50">
+						<input type="text" id="Register_birthday" onkeypress="return false;" maxlength="50" style="margin-right: 30px;">
 						<label id="lbl_birthday_error"></label>
 						<br>
 					</td>
@@ -585,12 +626,27 @@
 
 					<td style="width:80%;text-align:center">
 						<div id="game">
-							<canvas id="canvas" height="480" width="1000" style="border-radius:25px; border: 2px solid black;box-shadow: 5px 5px teal;"></canvas>
+							<canvas id="canvas" height="480" width="1000" style="border-radius:25px; border: 2px solid black;box-shadow: 2px 6px 10px teal;">							;"></canvas>
 						</div>
 					</td>
 				</tr>
 			</table>
 		</div>
+
+		<br><br><br>
+		<hr class="hr">
+		<br>
+
+		<footer class="footer">
+
+			Created by: Liat Cohen & Adir Biran<br>
+			&copy; 2020 Pacorona<br><br>
+
+			Contact us:<br>
+			<a href="mailto:liatp@post.bgu.ac.il">Liat Cohen</a><br>
+			<a href="mailto:adir.biran@gmail.com">Adir Biran</a>
+
+		</footer>
 
 	</body>
 </html>

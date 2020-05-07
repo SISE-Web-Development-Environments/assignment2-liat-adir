@@ -45,6 +45,9 @@ var shown = false;
 
 $(document).ready(function() {
 
+	disableScrollbarArrows();
+
+	
 	titleColors = ["White", "Red", "Orange", "Yellow", "Green", "Blue", "Pink", "Purple"];
 	
 	window.setInterval(colorTitle, 100);
@@ -66,6 +69,14 @@ $(document).ready(function() {
 			
 		});
 
+		$(document).keydown(function(event) { 
+			if (event.keyCode == 27) { 
+				document.getElementById("modalBox").style.display = 'none';
+			}
+		  });
+
+
+
 	});
 
 	  
@@ -75,6 +86,9 @@ $(document).ready(function() {
 
 });
 
+function closeAbout() {
+	document.getElementById("modalBox").style.display = "none";
+  }
 
 function checkRegistrationFields()
 {
@@ -83,13 +97,113 @@ function checkRegistrationFields()
 	var reg_password = $("#Register_password").val();
 	var reg_fullName = $("#Register_fullName").val();
 	var reg_mail = $("#Register_mail").val();
+	var reg_birthday = $("#Register_birthday").val();
 
-	$("#lbl_username_error").html("Invalid");
-	$("#lbl_username_error").css('color','Red');
+	if (reg_username.trim() == "")
+	{
+		$("#lbl_username_error").html("Invalid");
+		$("#lbl_username_error").css('color','Red');
+		return false;
+	}
+	else
+		$("#lbl_username_error").html("");
+
+
+	if (reg_password == "" || reg_password.length < 6 || !hasLetters(reg_password) || !hasNumber(reg_password))
+	{
+		$("#lbl_password_error").html("Invalid");
+		$("#lbl_password_error").css('color','Red');
+		return false;
+	}
+	else
+		$("#lbl_password_error").html("");
+
+	if (reg_fullName.trim() == "" || hasNumber(reg_fullName))
+	{
+		$("#lbl_fullName_error").html("Invalid");
+		$("#lbl_fullName_error").css('color','Red');
+		return false;
+	}
+	else
+		$("#lbl_fullName_error").html("");
+
+	if (reg_mail.trim() == "" || !isValidMail(reg_mail))
+	{
+		$("#lbl_mail_error").html("Invalid");
+		$("#lbl_mail_error").css('color','Red');
+		return false;
+	}
+	else
+		$("#lbl_mail_error").html("");	
+
+	if (reg_birthday.trim() == "")
+	{
+		$("#lbl_birthday_error").html("Invalid");
+		$("#lbl_birthday_error").css('color','Red');
+		return false;
+	}
+	else
+		$("#lbl_birthday_error").html("");
+
+	return true;
 
 
 }
 
+$( function() {
+
+	$( "#Register_birthday" ).datepicker({ dateFormat: 'dd.mm.yy' , maxDate: new Date()});
+  } );
+
+function hasNumber(str)
+{
+	var code, i, len;
+  
+	for (i = 0, len = str.length; i < len; i++) {
+	  code = str.charCodeAt(i);
+	  if (code > 47 && code < 58)
+		return true;
+	
+	}
+
+	return false;
+
+}
+
+function hasLetters(str)
+{
+	var code, i, len;
+  
+	for (i = 0, len = str.length; i < len; i++) {
+	  code = str.charCodeAt(i);
+	  if ((code > 64 && code < 91) || (code > 96 && code < 123))
+		return true;
+	
+	}
+
+	return false;
+
+}
+
+function isValidMail(email)
+{
+	var re = /\S+@\S+\.\S+/;
+	return re.test(email);
+}
+
+  function isAlphabetic(str) {
+	var code, i, len;
+  
+	for (i = 0, len = str.length; i < len; i++) {
+	  code = str.charCodeAt(i);
+	  if (!(code > 47 && code < 58) && // numeric (0-9)
+		  !(code > 64 && code < 91) && // upper alpha (A-Z)
+		  !(code > 96 && code < 123)) { // lower alpha (a-z)
+		return false;
+	  }
+	}
+	return true;
+  };
 
 function shiftTitleColors()
 {
@@ -125,7 +239,6 @@ function startGame()
 		initBoardSettings();
 		hideAllBut("pacman_gameDiv");
 		playAudio();
-		disableScrollbarArrows();
 		Start();
 	}
 
@@ -230,6 +343,7 @@ function playAudio()
 	else
 		audio.src = "./resources/babyshark.mp3";
 
+	audio.loop = true;
 	audio.play();
 }
 
@@ -266,8 +380,15 @@ function changeKey(op) {
 	}
 
 	div.style.backgroundColor="#66FF66";
+
+	$("#keyUpDiv").css('pointer-events','none');
+	$("#keyDownDiv").css('pointer-events','none');
+	$("#keyLeftDiv").css('pointer-events','none');
+	$("#keyRightDiv").css('pointer-events','none');
+
+
 	addEventListener('keydown', function(event) {
-		const key = event.keyCode; // "a", "1", "Shift", etc.
+		const key = event.keyCode; 
 
 	while (key == "undefined");
 
@@ -277,6 +398,11 @@ function changeKey(op) {
 		alert("Space is not a valid key");
 	else
 		label.innerHTML = event.key;
+
+	$("#keyUpDiv").css('pointer-events','');
+	$("#keyDownDiv").css('pointer-events','');
+	$("#keyLeftDiv").css('pointer-events','');
+	$("#keyRightDiv").css('pointer-events','');
 
 	div.style.backgroundColor="white";
 
@@ -331,30 +457,39 @@ function login()
 function register()
 {
 
-	checkRegistrationFields();
-
-	var username = document.getElementById("Register_username").value;
-	var password = document.getElementById("Register_password").value;
-	var fullName = document.getElementById("Register_fullName").value;
-	var mail = document.getElementById("Register_mail").value;
-	var birthday = document.getElementById("Register_birthday").value;
-
-	
-	if (users[username] != undefined)
-		alert("Username already exists");
-	else
+	if(checkRegistrationFields())
 	{
-		users[username] = password;
-		names[username] = fullName;
 
-		alert("Registraion succeed");
-		hideAllBut("welcomeDiv");
+		var username = document.getElementById("Register_username").value;
+		var password = document.getElementById("Register_password").value;
+		var fullName = document.getElementById("Register_fullName").value;
+		var mail = document.getElementById("Register_mail").value;
+		var birthday = document.getElementById("Register_birthday").value;
+	
+		
+		if (users[username] != undefined)
+			alert("Username already exists");
+		else
+		{
+			users[username] = password;
+			names[username] = fullName;
+	
+			alert("Registraion succeed");
+			hideAllBut("welcomeDiv");
+	
+			document.getElementById("Register_username").value = "";
+			document.getElementById("Register_password").value = "";
+			document.getElementById("Register_fullName").value = "";
+			document.getElementById("Register_mail").value = "";
+			document.getElementById("Register_birthday").value = "";
+			
+			$("#lbl_username_error").html("");
+			$("#lbl_mail_error").html("");
+			$("#lbl_fullName_error").html("");
+			$("#lbl_mail_error").html("");
 
-		document.getElementById("Register_username").value = "";
-		document.getElementById("Register_password").value = "";
-		document.getElementById("Register_fullName").value = "";
-		document.getElementById("Register_mail").value = "";
-		document.getElementById("Register_birthday").value = "";
+	}
+
 
 	}
 }
