@@ -230,9 +230,22 @@ function colorTitle()
 
 }
 
-function startGame()
+function restartGame()
 {
 
+	window.clearInterval(movingFoodInterval);
+	window.clearInterval(interval);
+	window.clearInterval(mobsInterval);
+
+initOptions();
+	initBoardSettings();
+	hideAllBut("pacman_gameDiv");
+	playAudio();
+	Start();
+}
+
+function startGame()
+{
 
 	if(initOptions())
 	{
@@ -241,10 +254,6 @@ function startGame()
 		playAudio();
 		Start();
 	}
-
-
-	
-
 }
 
 function disableScrollbarArrows()
@@ -336,6 +345,8 @@ function initOptions()
 
 function playAudio()
 {
+	audio.src = "";
+
 	var audioChosen = document.getElementById("song").value;
 
 	if (audioChosen == "golddigger")
@@ -1025,6 +1036,7 @@ function UpdatePosition() {
 		window.clearInterval(mobsInterval);
 		window.clearInterval(movingFoodInterval);
 		audio.src = "";
+		Draw();
 		window.alert("Loser!");
 	}
 

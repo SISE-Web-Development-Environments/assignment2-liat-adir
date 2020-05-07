@@ -64,7 +64,7 @@
 				</h1>
 				
 				<br>
-				
+
 				<button id="startLogin" class="button" value="Login" onclick="hideAllBut('loginDiv')">Login</button>
 				<button id="startRegister" class="button" value="Register" onclick="hideAllBut('registerDiv')">Register</button>
 
@@ -274,12 +274,13 @@
 					<td style="width: 50px; border-bottom: 2px solid black;">
 					</td>
 
-					<td id="td2Style">
-						<div></div>
+					<td id="td2Style" style="line-height: 55px;">
+						<div>
 						Up:<br>
 						Down:<br>
 						Left:<br>
 						Right:<br>
+						</div>
 					</td>
 
 					<td id="td2Style">
@@ -630,9 +631,15 @@
 						<div id="game">
 							<canvas id="canvas" height="480" width="1000" style="border-radius:25px; border: 2px solid black;box-shadow: 2px 6px 10px teal;">							;"></canvas>
 						</div>
+
+						<br><br>
+						
+							<div id="roundedStart" style="width: 200px; text-align: center;" onclick="restartGame()">New Game</div>
+
 					</td>
 				</tr>
 			</table>
+			
 		</div>
 
 		<br><br><br>
