@@ -14,8 +14,6 @@ Authors:
 
 Functionalities:
     - Once a game, a doctor will appear granting (+1) Health
-    
     - 10 seconds before the time ends, an hourglass will appear granting (+10) seconds
-    
     - Monsters speed can be changed (Slow, Medium, Fast)
 
