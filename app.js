@@ -273,12 +273,21 @@ function initBoardSettings()
 	document.getElementById("keyLeftOptionsLabel").innerHTML = document.getElementById("keyLeftLabel").innerHTML;
 	document.getElementById("keyRightOptionsLabel").innerHTML = document.getElementById("keyRightLabel").innerHTML;
 
+	var mobspeedText;
+
+	if (mobSpeed == 1)
+		mobspeedText = "Slow";
+	else if (mobSpeed == 2)
+		mobspeedText = "Medium";
+	else
+		mobspeedText = "Fast";
+
 	document.getElementById("numOfBalls").innerHTML = food;
 	document.getElementById("smallCol").innerHTML = "<font color='" + smallBallColor + "'>" + smallBallColor + "</font>";
 	document.getElementById("mediumCol").innerHTML =  "<font color='" + mediumBallColor + "'>" + mediumBallColor + "</font>";
 	document.getElementById("largeCol").innerHTML =  "<font color='" + largeBallColor + "'>" + largeBallColor + "</font>";
 	document.getElementById("numOfMobs").innerHTML = maxMonsters;
-	document.getElementById("speedOfMobs").innerHTML = mobSpeed;
+	document.getElementById("speedOfMobs").innerHTML = mobspeedText;
 	var song = document.getElementById("song").value;
 	if (song == "golddigger")
 		document.getElementById("songLabel").innerHTML = "Gold Digger";
