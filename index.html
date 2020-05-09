@@ -52,12 +52,28 @@
 
 			</div>
 
+
+
 		<br><br>
 
 		<div id="welcomeDiv">
 			<br><br><br><br>
 
+
+			<div id="home" style="float:left;">
+				<div id="roundedStart" style="width: 60px; text-align: center; font-size: 18px;" onclick="goHome()">Home</div><br>
+				<div id="roundedStart" style="width: 60px; text-align: center; font-size: 18px;" onclick="goLogin()">Login</div><br>
+				<div id="roundedStart" style="width: 60px; text-align: center; font-size: 18px;" onclick="goRegister()">Register</div>
+			</div>
+
 			<div id="rounded" style="width:500px; text-align: center;">
+
+				<div id="welcomeLogo" style="float: left; vertical-align: center;">
+					<img src="./resources/welcomeLogoL.jpg" style="vertical-align:middle;display:inline-block;" height=50px width=50px>
+				</div>
+				<div id="welcomeLogo" style="float: right; vertical-align: center;">
+					<img src="./resources/welcomeLogoR.jpg" style="vertical-align:middle;display:inline-block;" height=50px width=50px>
+				</div>
 
 				<h1>
 					Welcome to Pacorona!
@@ -68,7 +84,8 @@
 				<button id="startLogin" class="button" value="Login" onclick="hideAllBut('loginDiv')">Login</button>
 				<button id="startRegister" class="button" value="Register" onclick="hideAllBut('registerDiv')">Register</button>
 
-				<br><br><br><br><br>
+				<br><br>				
+				<br><br><br>
 
 				<button id="about" class="button" value="About" onclick="showAbout()">About</button>
 
@@ -127,6 +144,12 @@
 		<div id="loginDiv" style="display:none;">
 			<br><br><br><br>
 
+			<div id="home" style="float:left;">
+				<div id="roundedStart" style="width: 60px; text-align: center; font-size: 18px;" onclick="goHome()">Home</div><br>
+				<div id="roundedStart" style="width: 60px; text-align: center; font-size: 18px;" onclick="goLogin()">Login</div><br>
+				<div id="roundedStart" style="width: 60px; text-align: center; font-size: 18px;" onclick="goRegister()">Register</div>
+			</div>
+
 			<div id="rounded" style="width: 30%;">
 
 				<h1>
@@ -181,7 +204,11 @@
 
 			<br><br><br><br>
 
-
+			<div id="home" style="float:left;">
+				<div id="roundedStart" style="width: 60px; text-align: center; font-size: 18px;" onclick="goHome()">Home</div><br>
+				<div id="roundedStart" style="width: 60px; text-align: center; font-size: 18px;" onclick="goLogin()">Login</div><br>
+				<div id="roundedStart" style="width: 60px; text-align: center; font-size: 18px;" onclick="goRegister()">Register</div>
+			</div>
 
 
 			<div id="rounded" style="width: 30%;">
@@ -255,7 +282,11 @@
 
 			<br><br><br><br>
 
-
+			<div id="home" style="float:left;">
+				<div id="roundedStart" style="width: 60px; text-align: center; font-size: 18px;" onclick="goHome()">Home</div><br>
+				<div id="roundedStart" style="width: 60px; text-align: center; font-size: 18px;" onclick="goLogin()">Login</div><br>
+				<div id="roundedStart" style="width: 60px; text-align: center; font-size: 18px;" onclick="goRegister()">Register</div>
+			</div>
 
 			<div id="rounded" style="width: 500px;">
 
@@ -314,9 +345,9 @@
 
 					<td id="td2Style">
 						Balls number:<br>
-						Small Balls color:<br>
-						Medium Balls color:<br>
-						Large Balls color:<br>
+						(+5) Balls color:<br>
+						(+15) Balls color:<br>
+						(+25) Balls color:<br>
 						Number of Monsters:<br>
 						Speed of Monsters:
 					</td>
@@ -633,8 +664,11 @@
 						</div>
 
 						<br><br>
+						
+						<div id="roundedStart" style="width: 150px; text-align: center; float:left;" onclick="goHome()">Home</div>
+						<div id="roundedStart" style="width: 150px; text-align: center; float:right;" onclick="goOptions()">Options</div>
+						<div id="roundedStart" style="width: 150px; text-align: center;" onclick="restartGame()">New Game</div>
 
-							<div id="roundedStart" style="width: 200px; text-align: center;" onclick="restartGame()">New Game</div>
 
 					</td>
 				</tr>

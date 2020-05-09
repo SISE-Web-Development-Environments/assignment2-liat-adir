@@ -30,7 +30,7 @@ var largeBallColor;
 var base_size = 40;
 var rows = 25;
 var columns = 12;
-var remainingBalls = 0;
+var remainingBalls;
 var audio = new Audio();
 var users = {}
 var names = {}
@@ -237,7 +237,7 @@ function restartGame()
 	window.clearInterval(interval);
 	window.clearInterval(mobsInterval);
 
-initOptions();
+	initOptions();
 	initBoardSettings();
 	hideAllBut("pacman_gameDiv");
 	playAudio();
@@ -291,6 +291,10 @@ function initBoardSettings()
 
 function initOptions()
 {
+	remainingBalls = 0;
+	movingFoodAlive = true;
+
+
 	var time = document.getElementById("timeChosen").value;
 	var isNumber = time.match(/^[0-9]+$/) != null;
 
@@ -357,7 +361,7 @@ function playAudio()
 	audio.loop = true;
 	audio.play();
 }
-
+jj
 
 function changeKey(op) {
 	var label;
@@ -456,7 +460,7 @@ function login()
 
 	if (users[username] == password)
 	{
-		currentUserName = names[username];
+		currentUserName = username;
 		hideAllBut("optionsDiv");
 	}
 	
@@ -598,6 +602,15 @@ function randomizeValues()
 	mediumBallColor = rndBallsColors[1];
 	largeBallColor = rndBallsColors[2];
 
+	up = 38;
+ 	down = 40;
+ 	left = 37;
+	right = 39;
+	keyUpChange = 38;
+ 	keyDownChange = 40;
+ 	keyLeftChange = 37;
+	keyRightChange = 39;
+
 	document.getElementById("smallBallsColor").value = smallBallColor;
 	document.getElementById("mediumBallsColor").value = mediumBallColor;
 	document.getElementById("largeBallsColor").value = largeBallColor;
@@ -607,6 +620,11 @@ function randomizeValues()
 	document.getElementById("song").value = songRand;
 	document.getElementById("timeChosen").value = gameTime;
 	document.getElementById("mobSpeed").value = mobSpeed;
+
+	document.getElementById("keyUpLabel").innerHTML = "ArrowUp";
+	document.getElementById("keyDownLabel").innerHTML = "ArrowDown";
+	document.getElementById("keyLeftLabel").innerHTML = "ArrowLeft";
+	document.getElementById("keyRightLabel").innerHTML = "ArrowRight";
 }
 
 function Start() {
@@ -1063,6 +1081,7 @@ function UpdatePosition() {
 			audio.src = "";
 			window.alert("You are better than " + score + " points!");
 
+
 		}
 		else
 		{
@@ -1078,6 +1097,46 @@ function UpdatePosition() {
 	 else {
 		Draw();
 	}
+}
+
+function goHome()
+{
+	window.clearInterval(interval);
+	window.clearInterval(mobsInterval);
+	window.clearInterval(movingFoodInterval);
+	audio.src = "";
+
+	hideAllBut('welcomeDiv');
+}
+
+function goLogin()
+{
+	window.clearInterval(interval);
+	window.clearInterval(mobsInterval);
+	window.clearInterval(movingFoodInterval);
+	audio.src = "";
+
+	hideAllBut('loginDiv');
+}
+
+function goRegister()
+{
+	window.clearInterval(interval);
+	window.clearInterval(mobsInterval);
+	window.clearInterval(movingFoodInterval);
+	audio.src = "";
+
+	hideAllBut('registerDiv');
+}
+
+function goOptions()
+{
+	window.clearInterval(interval);
+	window.clearInterval(mobsInterval);
+	window.clearInterval(movingFoodInterval);
+	audio.src = "";
+
+	hideAllBut('optionsDiv');
 }
 
 function checkMovingFoodPlayerLocation()
@@ -1109,9 +1168,9 @@ function checkMobsPlayerLocations()
 function initMovingFood()
 {
 	var emptyCell = findRandomEmptyCell(board);
-	movingFood.i = emptyCell[0];
-	movingFood.j = emptyCell[1];
-	board[emptyCell[0]][emptyCell[1]] = 7;
+	movingFood.i = 0;
+	movingFood.j = 13;
+	board[0][13] = 7;
 }
 
 function initMobs()
